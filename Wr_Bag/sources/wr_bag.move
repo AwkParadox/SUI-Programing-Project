@@ -1,4 +1,4 @@
-module move_gas_optimization::F_hero_with_bag_wrapped{
+module wr_bag::F_hero_with_bag_wrapped{
     use sui::bag;
 
     public struct Hero has key, store{
@@ -110,7 +110,19 @@ module move_gas_optimization::F_hero_with_bag_wrapped{
             i = i + 1;
         }
     }
-    
+
+    public entry fun delete_hero_with_bag_wrapped(mut hero: Hero){
+        //1) Delete_bag_contents
+        delete_bag_contents(&mut hero);
+        
+        //2) Unpack and delete Hero
+        let Hero{id, bag} = hero;
+        object::delete(id);
+
+        //3) Delete Bag
+        bag::destroy_empty(bag);
+    }
+
     public fun delete_bag_contents(hero_obj_ref: &mut Hero){
         //1) Set up mut_ref to bag using borrow_mut
         let mut bag_ref: &mut bag::Bag = &mut hero_obj_ref.bag;
