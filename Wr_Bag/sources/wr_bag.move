@@ -1,9 +1,13 @@
 module wr_bag::F_hero_with_bag_wrapped{
     use sui::bag;
+    // import vector for step 5
+    use std::vector;
 
     public struct Hero has key, store{
         id: UID,
         bag: bag::Bag
+        //adding vector field for step 5
+        accessories_vector: vector<u64>;
     }
 
     public struct Sword has key, store{
@@ -28,11 +32,22 @@ module wr_bag::F_hero_with_bag_wrapped{
         while(i < 10){
             let bag_object = bag::new(ctx);
 
+            // Creating large vector field
+            let mut accessories_vector = vector::empty<u64>();
+            let mut j = 0;
+            while (j < 200){
+                vector::push_back(&mut accessories_vector, j);
+                j = j + 1;
+            }
+
             //1) Create hero (bag included as field)
             let mut hero = Hero{
                 id: object::new(ctx),
-                bag: bag_object
+                bag: bag_object,
+                //Adding large vector field to hero
+                accessories_vector
             };
+
             //2) Create accessories and attach to bag
             // creating hero attributes
             let mut sword = Sword{id: object::new(ctx), strength: 0};
@@ -116,7 +131,7 @@ module wr_bag::F_hero_with_bag_wrapped{
         delete_bag_contents(&mut hero);
         
         //2) Unpack and delete Hero
-        let Hero{id, bag} = hero;
+        let Hero{id, bag, accessories_vector} = hero;
         object::delete(id);
 
         //3) Delete Bag
