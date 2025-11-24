@@ -5,9 +5,9 @@ module wr_bag::F_hero_with_bag_wrapped{
 
     public struct Hero has key, store{
         id: UID,
-        bag: bag::Bag
+        bag: bag::Bag,
         //adding vector field for step 5
-        accessories_vector: vector<u64>;
+        accessories_vector: vector<u64>
     }
 
     public struct Sword has key, store{
@@ -38,7 +38,7 @@ module wr_bag::F_hero_with_bag_wrapped{
             while (j < 200){
                 vector::push_back(&mut accessories_vector, j);
                 j = j + 1;
-            }
+            };
 
             //1) Create hero (bag included as field)
             let mut hero = Hero{
